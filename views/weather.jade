@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  div.container
+    div.content
+      table.table.table-striped
+        thead
+          tr
+            th City
+            th Geo location
+            th Station id
+            th Temperature
+            th Humidity
+        tbody
+          each report in reports
+            tr
+              td= report.city
+              td= report.location
+              td= report.station_id
+              td= report.temperature
+              td= report.humidity
+ 
+  div.footer
