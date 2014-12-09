@@ -15,13 +15,15 @@ router.post('/report', function(req, res) {
 
 	var cities = req.body.cities.split(',');
 
+	var data = {};
 	var reports = [];
+	var errors = [];
 
 	async.each(cities, function (city, callback) {
 		console.log("City: " + city + " & State: " + _db[city]);
 		var url = "http://api.wunderground.com/api/1cac84a45266295a/conditions/q/" + _db[city] + "/" + city + ".json";
 		console.log(url);
-		http.get(url, function(response) {
+		var request = http.get(url, function(response) {
 			var body = '';
         	response.on('data', function(d) {
             	body += d;
@@ -29,15 +31,19 @@ router.post('/report', function(req, res) {
         	response.on('end', function() {
         		var fullWeatherReport = JSON.parse(body);
         		if(fullWeatherReport.current_observation == null) {
-        			// callback(getError({city: city, state: _db[city]}, 404, 'Resource not found'));
-        			console.error(getError({city: city, state: _db[city]}, 404, 'Resource not found'));
+        			var e = getError({city: city, state: _db[city]}, 404, 'Resource not found');
+        			console.error(e);
+        			errors.push(city);
         		} else {
 	        		reports.push(getMinimalWeatherReport(fullWeatherReport));
-	        		callback();
         		}
+        		callback();
         	});
-		}).on('error', function(err) {
-			callback(getError({city: city, state: _db[city]}, 500, 'Internal server error'));
+		});
+		request.on('error', function(err) {
+			var e = getError({city: city, state: _db[city]}, 500, 'Internal server error');
+			console.error(e);
+			errors.push(city);
 		});
 	}, function (err) {
 		if(err) {
@@ -50,8 +56,10 @@ router.post('/report', function(req, res) {
 				})
 			);
 		} else {
-			console.log(JSON.stringify(reports, null, "\t"));
-			res.render('report', { reports: reports, title: 'Weather reporting tool' });
+			data.errors = errors;
+			data.reports = reports;
+			console.log(JSON.stringify(data, null, "\t"));
+			res.render('report', { data: data, title: 'Weather reporting tool' });
 		}
 	});
 });

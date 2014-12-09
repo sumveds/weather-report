@@ -50,6 +50,8 @@ body {
 
 .btn {
   padding: 5px 14px 6px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .login-prompt {
