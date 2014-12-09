@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .jumbotron
+    h2 Weather report
+    h3 Welcome to the weather report page!
+
+  div.container
+    div.content
+      table.table.table-striped
+        thead
+          tr
+            th City
+            th Location
+            th Weather
+            th Temperature
+            th Humidity
+        tbody
+          each report in reports
+            tr
+              td= report.city
+              td= report.location
+              td= report.weather
+              td= report.temperature
+              td= report.humidity
+
+div.footer

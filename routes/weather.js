@@ -4,20 +4,39 @@ var async = require('async');
 var express = require('express');
 var router = express.Router();
 
-/* GET weather reporting page. */
-router.get('/report', function(req, res) {
+router.get('/', function (req, res) {
+	res.render('weather', { title: 'Weather reporting tool' });
+});
 
-	var items = [
+/* GET weather reporting page. */
+router.post('/report', function(req, res) {
+
+	console.log(req.body);
+
+	var cities = req.body.cities.split(',');
+
+	// console.log(cities);
+
+	/*var _db = [
 		{city: "Campbell", state: "CA"},
 		{city: "Omaha", state: "NE"},
 		{city: "Austin", state: "TX"},
 		{city: "Timonium", state: "MD"}
-	];
+	];*/
+	var _db = {
+		"Campbell":"CA",
+		"Omaha":"NE",
+		"Austin":"TX",
+		"Timonium":"MD"
+	};
 
 	var reports = [];
 
-	/*async.each(items, function (item, callback) {
-		http.get("http://api.wunderground.com/api/1cac84a45266295a/conditions/q/" + item.state + "/" + item.city + ".json", function(response) {
+	async.each(cities, function (city, callback) {
+		console.log("City: " + city + " & State: " + _db[city]);
+		var url = "http://api.wunderground.com/api/1cac84a45266295a/conditions/q/" + _db[city] + "/" + city + ".json";
+		console.log(url);
+		http.get(url, function(response) {
 			var body = '';
         	response.on('data', function(d) {
             	body += d;
@@ -25,17 +44,18 @@ router.get('/report', function(req, res) {
         	response.on('end', function() {
         		var fullWeatherReport = JSON.parse(body);
         		if(fullWeatherReport.current_observation == null) {
-        			callback(getError(item, 404, 'Resource not found'));
+        			callback(getError({city: city, state: _db[city]}, 404, 'Resource not found'));
         		} else {
 	        		reports.push(getMinimalWeatherReport(fullWeatherReport));
 	        		callback();
         		}
         	});
 		}).on('error', function(err) {
-			callback(getError(item, 500, 'Internal server error'));
+			callback(getError({city: city, state: _db[city]}, 500, 'Internal server error'));
 		});
 	}, function (err) {
 		if(err) {
+			console.log(err);
 			res.status(err.status).send(JSON.stringify(
 				{
 					city: err.city, 
@@ -45,11 +65,11 @@ router.get('/report', function(req, res) {
 			);
 		} else {
 			console.log(JSON.stringify(reports, null, "\t"));
-			res.render('weather', { reports: reports, title: 'Weather reporting tool' });
+			res.render('report', { reports: reports, title: 'Weather reporting tool' });
 		}
-	});*/
+	});
 
-	var reports = [
+	/*var reports = [
         {
                 "city": "Omaha, NE",
                 "location": "-95.93376160,41.26331329",
@@ -79,7 +99,7 @@ router.get('/report', function(req, res) {
                 "humidity": "66%"
         }
 	];
-	res.render('weather', { reports: reports, title: 'Weather reporting tool' });
+	res.render('report', { reports: reports, title: 'Weather reporting tool' });*/
 });
 
 router.all('/', function(req, res) {

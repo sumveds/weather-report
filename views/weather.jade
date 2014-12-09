@@ -9,25 +9,8 @@ block content
     .navbar.navbar-default(role='navigation')
       .container-fluid
         .collapse.navbar-collapse
-          form(name="report", class="navbar-form navbar-left", action="/weather/report", method="post")
-            input(type="text", class="form-control", data-role="tagsinput", placeholder="Type in city and press enter...") Cities
+          form(name="report", class="navbar-form navbar-left", action="/weather/report", method="POST")
+            input(type="text", name="cities", class="form-control", data-role="tagsinput", placeholder="Type in city and press enter...")
             input(type="submit", class="btn btn-default", value="Submit")
-    div.content
-      table.table.table-striped
-        thead
-          tr
-            th City
-            th Location
-            th Weather
-            th Temperature
-            th Humidity
-        tbody
-          each report in reports
-            tr
-              td= report.city
-              td= report.location
-              td= report.weather
-              td= report.temperature
-              td= report.humidity
  
   div.footer
