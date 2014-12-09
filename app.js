@@ -19,11 +19,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*app.use('/weather/*', function (req, res, next) {
-    res.set('Content-Type', 'application/json');
-    next();
-});*/
-
 app.use('/weather', weather);
 
 module.exports = app;

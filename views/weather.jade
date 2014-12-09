@@ -1,14 +1,24 @@
 extends layout
 
 block content
+  .jumbotron
+    h2 Weather report
+    h3 Welcome to the weather report page!
+
   div.container
+    .navbar.navbar-default(role='navigation')
+      .container-fluid
+        .collapse.navbar-collapse
+          form(name="report", class="navbar-form navbar-left", action="/weather/report", method="post")
+            input(type="text", class="form-control", data-role="tagsinput", placeholder="Type in city and press enter...") Cities
+            input(type="submit", class="btn btn-default", value="Submit")
     div.content
       table.table.table-striped
         thead
           tr
             th City
-            th Geo location
-            th Station id
+            th Location
+            th Weather
             th Temperature
             th Humidity
         tbody
@@ -16,7 +26,7 @@ block content
             tr
               td= report.city
               td= report.location
-              td= report.station_id
+              td= report.weather
               td= report.temperature
               td= report.humidity
  
